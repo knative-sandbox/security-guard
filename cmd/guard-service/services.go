@@ -33,14 +33,13 @@ type serviceRecord struct {
 	cmFlag       bool                 // indicate if the deployed service uses a ConfigMap (or CRD)
 	guardianSpec *spec.GuardianSpec   // a copy of the cached deployed service Guardian (RO - no mutext needed)
 	pile         spec.SessionDataPile // the deployed service Pile (RW - protected with pileMutex)
-	pileMutex    sync.Mutex           // protect access to cache map, namespaces map, record piles
-
+	pileMutex    sync.Mutex           // protect access to the pile
 }
 
 // service cache maintaining a cached record per deployed service
 type services struct {
 	kmgr       guardKubeMgr.KubeMgrInterface // KubeMgr to access KuebApi during cache misses
-	mutex      sync.Mutex                    // protect access to cache map, namespaces map, record piles
+	mutex      sync.Mutex                    // protect access to cache map and to namespaces map
 	cache      map[string]*serviceRecord     // the cache
 	namespaces map[string]bool               // list of namespaces to watch for changes in ConfigMaps and CRDs
 	tickerKeys []string                      // list of cache keys to periodically process during a tick()
@@ -75,8 +74,8 @@ func (s *services) tick() {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	// make sure we have work to do
 	if len(s.tickerKeys) == 0 {
+		// Assign more work to be done now and in future ticks
 		s.tickerKeys = make([]string, len(s.cache))
 		i := 0
 		for k := range s.cache {
@@ -85,17 +84,19 @@ func (s *services) tick() {
 		}
 	}
 
+	// try up to 100 records per tick to find one that can be learned
 	maxIterations := len(s.tickerKeys)
 	if maxIterations > 100 {
 		maxIterations = 100
 	}
 
+	// try to learn one record
 	i := 0
 	for ; i < maxIterations; i++ {
-		// try to learnPile the first of maxIterations records
 		if record, exists := s.cache[s.tickerKeys[i]]; exists {
+			// we still have this record, lets learn it
 			if s.learnPile(record) {
-				// learnPile one record
+				// we learned one record
 				i++
 				break
 			}

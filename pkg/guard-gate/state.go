@@ -119,7 +119,7 @@ func (gs *gateState) profileAndDecidePod() {
 	// If we are blocking, this means we will simply keep blocking all requests forever
 	// Therefore we terminate the reverse proxy
 	// Future - add more controls to decide what to do in this situation
-	if gs.criteria.Active {
+	if gs.criteria != nil && gs.criteria.Active {
 		decision := gs.criteria.Pod.Decide(&gs.pod)
 		if decision != nil {
 			gs.addStat("PodAlert")
@@ -145,7 +145,7 @@ func (gs *gateState) copyPodProfile(pp *spec.PodProfile) {
 
 // returns the alert text if needed
 func (gs *gateState) decideReq(rp *spec.ReqProfile) string {
-	if gs.criteria.Active {
+	if gs.criteria != nil && gs.criteria.Active {
 		if decision := gs.criteria.Req.Decide(rp); decision != nil {
 			gs.addStat("ReqAlert")
 			return decision.String("HttpRequest -> ")
@@ -156,7 +156,7 @@ func (gs *gateState) decideReq(rp *spec.ReqProfile) string {
 
 // returns the alert text if needed
 func (gs *gateState) decideResp(rp *spec.RespProfile) string {
-	if gs.criteria.Active {
+	if gs.criteria != nil && gs.criteria.Active {
 		if decision := gs.criteria.Resp.Decide(rp); decision != nil {
 			gs.addStat("RespAlert")
 			return decision.String("HttpResponse  -> ")
@@ -167,7 +167,7 @@ func (gs *gateState) decideResp(rp *spec.RespProfile) string {
 
 // returns the alert text if needed
 func (gs *gateState) decideReqBody(bp *spec.BodyProfile) string {
-	if gs.criteria.Active {
+	if gs.criteria != nil && gs.criteria.Active {
 		if decision := gs.criteria.ReqBody.Decide(bp); decision != nil {
 			gs.addStat("ReqBodyAlert")
 			return decision.String("HttpRequestBody -> ")
@@ -178,7 +178,7 @@ func (gs *gateState) decideReqBody(bp *spec.BodyProfile) string {
 
 // returns the alert text if needed
 func (gs *gateState) decideRespBody(bp *spec.BodyProfile) string {
-	if gs.criteria.Active {
+	if gs.criteria != nil && gs.criteria.Active {
 		if decision := gs.criteria.RespBody.Decide(bp); decision != nil {
 			gs.addStat("RespBodyAlert")
 			return decision.String("HttpResponseBody  -> ")
@@ -189,7 +189,7 @@ func (gs *gateState) decideRespBody(bp *spec.BodyProfile) string {
 
 // returns the alert text if needed
 func (gs *gateState) decideEnvelop(ep *spec.EnvelopProfile) string {
-	if gs.criteria.Active {
+	if gs.criteria != nil && gs.criteria.Active {
 		if decision := gs.criteria.Envelop.Decide(ep); decision != nil {
 			gs.addStat("EnvelopAlert")
 			return decision.String("Envelop  -> ")

@@ -21,6 +21,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -54,9 +55,6 @@ func main() {
 	plugConfig := make(map[string]string)
 	plugConfig["monitor-pod"] = "false" // default when used as a standalone
 	plugConfig["use-cm"] = "false"
-	plugConfig["guardian-load-interval"] = env.GuardianLoadInterval
-	plugConfig["report-pile-interval"] = env.ReportPileInterval
-	plugConfig["pod-monitor-interval"] = env.PodMonitorInterval
 
 	NumServices := env.NumServices
 	NumInstances := env.NumInstances
@@ -68,7 +66,7 @@ func main() {
 		NumInstances = 10
 	}
 	if NumRequests == 0 {
-		NumRequests = 100
+		NumRequests = 1000
 	}
 
 	pi.Log.Infof("env.GuardUrl %s\n", env.GuardUrl)
@@ -78,12 +76,20 @@ func main() {
 		plugConfig["guard-url"] = env.GuardUrl
 	}
 
+	fmt.Printf("utils.MinimumInterval %d\n", utils.MinimumInterval)
+	utils.MinimumInterval = 5 * time.Millisecond
+	fmt.Printf("utils.MinimumInterval %d\n", utils.MinimumInterval)
+	rand.Seed(time.Now().UnixNano())
 	guardGates := make([][]pi.RoundTripPlug, NumServices)
 	randomSid := (time.Now().UnixNano() % 0x1000000)
 	for svc := 0; svc < NumServices; svc++ {
 		guardGates[svc] = make([]pi.RoundTripPlug, NumInstances)
 		sid := fmt.Sprintf("simulate-%x-%x", randomSid, svc)
 		for ins := 0; ins < NumInstances; ins++ {
+			plugConfig["guardian-load-interval"] = fmt.Sprintf("%dns", rand.Intn(100000000000))
+			plugConfig["report-pile-interval"] = fmt.Sprintf("%dns", rand.Intn(10000000))
+			plugConfig["pod-monitor-interval"] = fmt.Sprintf("%dns", rand.Intn(100000000000))
+			fmt.Printf("plugConfig %v\n", plugConfig)
 			guardGates[svc][ins] = guardgate.NewGate()
 			guardGates[svc][ins].Init(context.Background(), plugConfig, sid, "", pi.Log)
 			defer guardGates[svc][ins].Shutdown()
@@ -91,7 +97,6 @@ func main() {
 	}
 
 	defer utils.SyncLogger()
-	ticker := time.NewTicker(1000 * time.Millisecond)
 	body := map[string][]string{
 		"abc": {"ccc", "dddd"},
 		"www": {"aaa", "bbb"},
@@ -99,37 +104,73 @@ func main() {
 
 	jsonBytes, _ := json.Marshal(body)
 
-	for range ticker.C {
-		for svc := 0; svc < NumServices; svc++ {
-			for ins := 0; ins < NumInstances; ins++ {
-				for i := 0; i < NumRequests; i++ {
-					// request handling
-					req := httptest.NewRequest("GET", "/", bytes.NewReader(jsonBytes))
-					req, err := guardGates[svc][ins].ApproveRequest(req)
-					if err != nil {
-						pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
-						continue
-					}
+	rand.Seed(time.Now().UnixNano())
+	for {
+		svc := rand.Intn(NumServices)
+		ins := rand.Intn(NumInstances)
+		reqs := rand.Intn(NumRequests)
+		for i := 0; i <= reqs; i++ {
+			// request handling
+			req := httptest.NewRequest("GET", "/", bytes.NewReader(jsonBytes))
+			req, err := guardGates[svc][ins].ApproveRequest(req)
+			if err != nil {
+				pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
+				continue
+			}
 
-					// response handling
-					resp := new(http.Response)
-					_, err = guardGates[svc][ins].ApproveResponse(req, resp)
-					if err != nil {
-						pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
-						continue
-					}
+			// response handling
+			resp := new(http.Response)
+			_, err = guardGates[svc][ins].ApproveResponse(req, resp)
+			if err != nil {
+				pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
+				continue
+			}
 
-					// cancel handling
+			// cancel handling
 
-					s := guardgate.GetSessionFromContext(req.Context())
-					if s == nil { // This should never happen!
-						pi.Log.Infof("Cant cancel simulation Missing context!")
-						continue
+			s := guardgate.GetSessionFromContext(req.Context())
+			if s == nil { // This should never happen!
+				pi.Log.Infof("Cant cancel simulation Missing context!")
+				continue
+			}
+			s.Cancel()
+		}
+	}
+	/*
+		ticker := time.NewTicker(1000 * time.Millisecond)
+
+		for range ticker.C {
+
+			for svc := 0; svc < NumServices; svc++ {
+				for ins := 0; ins < NumInstances; ins++ {
+					for i := 0; i < NumRequests; i++ {
+						// request handling
+						req := httptest.NewRequest("GET", "/", bytes.NewReader(jsonBytes))
+						req, err := guardGates[svc][ins].ApproveRequest(req)
+						if err != nil {
+							pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
+							continue
+						}
+
+						// response handling
+						resp := new(http.Response)
+						_, err = guardGates[svc][ins].ApproveResponse(req, resp)
+						if err != nil {
+							pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
+							continue
+						}
+
+						// cancel handling
+
+						s := guardgate.GetSessionFromContext(req.Context())
+						if s == nil { // This should never happen!
+							pi.Log.Infof("Cant cancel simulation Missing context!")
+							continue
+						}
+						s.Cancel()
 					}
-					s.Cancel()
 				}
 			}
 		}
-	}
-
+	*/
 }

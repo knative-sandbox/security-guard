@@ -21,7 +21,7 @@ import (
 	"time"
 )
 
-const (
+var (
 	MinimumInterval = 5 * time.Second
 )
 
