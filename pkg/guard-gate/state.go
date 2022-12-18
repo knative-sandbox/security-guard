@@ -82,14 +82,18 @@ func (gs *gateState) loadConfig() {
 		gs.ctrl = new(spec.Ctrl)
 	}
 
+	// Set the correct criteria
+	var criteria *spec.SessionDataConfig
 	if gs.ctrl.Auto {
-		gs.criteria = g.Learned
+		criteria = g.Learned
 	} else {
-		gs.criteria = g.Configured
+		criteria = g.Configured
 	}
-	if gs.criteria == nil {
-		gs.criteria = new(spec.SessionDataConfig)
+	if criteria == nil {
+		criteria = new(spec.SessionDataConfig)
 	}
+	criteria.Prepare()
+	gs.criteria = criteria
 }
 
 // flushPile is called periodically to send the pile to the guard-service

@@ -113,3 +113,6 @@ func (config *FlagSliceConfig) fuseI(otherValConfig ValueConfig) {
 func (config *FlagSliceConfig) Fuse(otherConfig FlagSliceConfig) {
 	*config = mergeFlagSlices(*config, otherConfig)
 }
+
+func (config *FlagSliceConfig) Prepare() {
+}

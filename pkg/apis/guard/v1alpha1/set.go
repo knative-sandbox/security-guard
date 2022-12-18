@@ -127,13 +127,6 @@ func (config *SetConfig) Decide(profile *SetProfile) *Decision {
 		return nil
 	}
 
-	if config.m == nil {
-		config.m = make(map[string]bool, len(config.List))
-		// Populate the map from the information in List
-		for _, v := range config.List {
-			config.m[v] = true
-		}
-	}
 	for _, v := range *profile {
 		if !config.m[v] {
 			DecideInner(&current, 1, "Unexpected key %s in Set", v)
@@ -176,5 +169,13 @@ func (config *SetConfig) Fuse(otherConfig *SetConfig) {
 			config.m[v] = true
 			config.List = append(config.List, v)
 		}
+	}
+}
+
+func (config *SetConfig) Prepare() {
+	config.m = make(map[string]bool, len(config.List))
+	// Populate the map from the information in List
+	for _, v := range config.List {
+		config.m[v] = true
 	}
 }

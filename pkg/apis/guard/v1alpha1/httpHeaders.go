@@ -100,3 +100,7 @@ func (config *HeadersConfig) fuseI(otherValConfig ValueConfig) {
 func (config *HeadersConfig) Fuse(otherConfig *HeadersConfig) {
 	config.Kv.Fuse(&otherConfig.Kv)
 }
+
+func (config *HeadersConfig) Prepare() {
+	config.Kv.Prepare()
+}

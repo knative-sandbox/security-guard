@@ -195,3 +195,15 @@ func (config *ReqConfig) Fuse(otherConfig *ReqConfig) {
 	config.Qs.Fuse(&otherConfig.Qs)
 	config.Url.Fuse(&otherConfig.Url)
 }
+
+func (config *ReqConfig) Prepare() {
+	config.ClientIp.Prepare()
+	config.HopIp.Prepare()
+	config.Method.Prepare()
+	config.Proto.Prepare()
+	config.MediaType.Prepare()
+	config.ContentLength.Prepare()
+	config.Headers.Prepare()
+	config.Qs.Prepare()
+	config.Url.Prepare()
+}

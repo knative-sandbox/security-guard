@@ -229,3 +229,16 @@ func (config *KeyValConfig) Fuse(otherConfig *KeyValConfig) {
 		config.OtherVals.Fuse(otherConfig.OtherVals)
 	}
 }
+
+func (config *KeyValConfig) Prepare() {
+	for _, v := range config.Vals {
+		v.Prepare()
+	}
+
+	if config.OtherKeynames != nil {
+		config.OtherKeynames.Prepare()
+	}
+	if config.OtherVals != nil {
+		config.OtherVals.Prepare()
+	}
+}

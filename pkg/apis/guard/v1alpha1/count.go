@@ -161,3 +161,6 @@ func (config *CountConfig) Fuse(otherConfig CountConfig) {
 		}
 	}
 }
+
+func (config *CountConfig) Prepare() {
+}

@@ -37,6 +37,10 @@ const (
 	serviceIntervalDefault = 5 * time.Minute
 )
 
+var totalPiles uint64
+var totalProfiles uint64
+var startTime time.Time
+
 type config struct {
 	GuardServiceLogLevel string   `split_words:"true" required:"false"`
 	GuardServiceInterval string   `split_words:"true" required:"false"`
@@ -185,10 +189,19 @@ func (l *learner) processPile(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	totalPiles++
+	totalProfiles += uint64(pile.Count)
+	elapsed := time.Since(startTime)
+
 	l.services.merge(record, &pile)
 
-	pi.Log.Debugf("Successful merging pile")
-
+	pi.Log.Debugf("Successful merging pile totalPiles %d totalProfiles %d time %d", totalPiles, totalProfiles, elapsed)
+	if elapsed > 1000000000 {
+		pi.Log.Infof("Successful merging pile totalPiles %d totalProfiles %d time %d", totalPiles, totalProfiles, elapsed)
+		startTime = time.Now()
+		totalPiles = 0
+		totalProfiles = 0
+	}
 	w.Write([]byte{})
 }
 
@@ -234,6 +247,7 @@ func preMain(minimumInterval time.Duration) (*learner, *http.ServeMux, string, c
 func main() {
 	var err error
 	l, mux, target, quit := preMain(utils.MinimumInterval)
+	startTime = time.Now()
 
 	// cant be tested due to KubeMgr
 	l.services.start()

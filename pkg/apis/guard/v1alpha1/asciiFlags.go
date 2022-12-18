@@ -145,3 +145,6 @@ func (config *AsciiFlagsConfig) fuseI(otherValConfig ValueConfig) {
 func (config *AsciiFlagsConfig) Fuse(otherConfig AsciiFlagsConfig) {
 	*config |= otherConfig
 }
+
+func (config *AsciiFlagsConfig) Prepare() {
+}

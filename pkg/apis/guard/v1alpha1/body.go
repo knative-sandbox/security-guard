@@ -169,3 +169,12 @@ func (config *BodyConfig) Fuse(otherConfig *BodyConfig) {
 		config.Unstructured.Fuse(otherConfig.Unstructured)
 	}
 }
+
+func (config *BodyConfig) Prepare() {
+	if config.Structured != nil {
+		config.Structured.Prepare()
+	}
+	if config.Unstructured != nil {
+		config.Unstructured.Prepare()
+	}
+}

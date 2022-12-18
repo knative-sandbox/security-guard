@@ -362,3 +362,15 @@ func (config *SimpleValConfig) Decide(profile *SimpleValProfile) *Decision {
 	DecideChild(&current, config.UnicodeFlags.Decide(profile.UnicodeFlags), "Unicode Blocks")
 	return current
 }
+
+func (config *SimpleValConfig) Prepare() {
+	config.Digits.Prepare()
+	config.Letters.Prepare()
+	config.Spaces.Prepare()
+	config.SpecialChars.Prepare()
+	config.NonReadables.Prepare()
+	config.Unicodes.Prepare()
+	config.Sequences.Prepare()
+	config.Flags.Prepare()
+	config.UnicodeFlags.Prepare()
+}

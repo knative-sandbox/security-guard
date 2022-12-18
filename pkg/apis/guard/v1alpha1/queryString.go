@@ -100,3 +100,7 @@ func (config *QueryConfig) fuseI(otherValConfig ValueConfig) {
 func (config *QueryConfig) Fuse(otherConfig *QueryConfig) {
 	config.Kv.Fuse(&otherConfig.Kv)
 }
+
+func (config *QueryConfig) Prepare() {
+	config.Kv.Prepare()
+}

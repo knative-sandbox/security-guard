@@ -297,3 +297,14 @@ func (config *StructuredConfig) Fuse(otherConfig *StructuredConfig) {
 		config.Val.Fuse(otherConfig.Val)
 	}
 }
+
+func (config *StructuredConfig) Prepare() {
+	switch config.Kind {
+	case KindObject:
+		for _, v := range config.Kv {
+			v.Prepare()
+		}
+	case KindArray, KindBoolean, KindNumber, KindString:
+		config.Val.Prepare()
+	}
+}

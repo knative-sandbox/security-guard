@@ -118,3 +118,8 @@ func (config *EnvelopConfig) Fuse(otherConfig *EnvelopConfig) {
 	config.CompletionTime.Fuse(otherConfig.CompletionTime)
 	config.ResponseTime.Fuse(otherConfig.ResponseTime)
 }
+
+func (config *EnvelopConfig) Prepare() {
+	config.CompletionTime.Prepare()
+	config.ResponseTime.Prepare()
+}

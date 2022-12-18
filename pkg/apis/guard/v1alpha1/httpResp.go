@@ -126,3 +126,9 @@ func (config *RespConfig) Fuse(otherConfig *RespConfig) {
 	config.MediaType.Fuse(&otherConfig.MediaType)
 	config.ContentLength.Fuse(otherConfig.ContentLength)
 }
+
+func (config *RespConfig) Prepare() {
+	config.Headers.Prepare()
+	config.MediaType.Prepare()
+	config.ContentLength.Prepare()
+}

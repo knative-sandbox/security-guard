@@ -171,4 +171,7 @@ type ValueConfig interface {
 	// All issues will be reported
 	// Profile is unchanged and unaffected by decideI and can be used again
 	decideI(profile ValueProfile) *Decision
+
+	// Prepare the config during loading of a new config
+	Prepare()
 }

@@ -281,3 +281,6 @@ LoopOtherCidrs:
 		*config = append(*config, *otherCidr.DeepCopy())
 	}
 }
+
+func (config *IpSetConfig) Prepare() {
+}

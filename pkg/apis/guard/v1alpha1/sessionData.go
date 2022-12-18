@@ -161,3 +161,12 @@ func (config *SessionDataConfig) Fuse(otherConfig *SessionDataConfig) {
 	config.Envelop.Fuse(&otherConfig.Envelop)
 	config.Pod.Fuse(&otherConfig.Pod)
 }
+
+func (config *SessionDataConfig) Prepare() {
+	config.Req.Prepare()
+	config.Resp.Prepare()
+	config.ReqBody.Prepare()
+	config.RespBody.Prepare()
+	config.Envelop.Prepare()
+	config.Pod.Prepare()
+}

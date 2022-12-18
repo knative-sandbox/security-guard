@@ -122,3 +122,8 @@ func (config *UrlConfig) Decide(profile *UrlProfile) *Decision {
 	DecideChild(&current, config.Val.Decide(&profile.Val), "Val")
 	return current
 }
+
+func (config *UrlConfig) Prepare() {
+	config.Segments.Prepare()
+	config.Val.Prepare()
+}

@@ -112,3 +112,8 @@ func (config *MediaTypeConfig) Fuse(otherConfig *MediaTypeConfig) {
 	config.TypeTokens.Fuse(&otherConfig.TypeTokens)
 	config.Params.Fuse(&otherConfig.Params)
 }
+
+func (config *MediaTypeConfig) Prepare() {
+	config.TypeTokens.Prepare()
+	config.Params.Prepare()
+}
