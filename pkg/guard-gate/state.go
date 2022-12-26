@@ -74,7 +74,7 @@ func (gs gateState) start() {
 
 // loadConfig is called periodically to load updated configuration from a Guardian
 func (gs *gateState) loadConfig() {
-	pi.Log.Infof("Loading Guardian")
+	pi.Log.Debugf("Loading Guardian")
 	// loadGuardian never returns nil!
 	g := gs.srv.loadGuardian()
 

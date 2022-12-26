@@ -37,13 +37,10 @@ const (
 	serviceIntervalDefault = 5 * time.Minute
 )
 
-var totalPiles uint64
-var totalProfiles uint64
-var startTime time.Time
-
 type config struct {
 	GuardServiceLogLevel string   `split_words:"true" required:"false"`
 	GuardServiceInterval string   `split_words:"true" required:"false"`
+	GuardStatInterval    string   `split_words:"true" required:"false"`
 	GuardServiceAuth     bool     `split_words:"true" required:"false"`
 	GuardServiceLabels   []string `split_words:"true" required:"false"`
 	GuardServiceTls      bool     `split_words:"true" required:"false"`
@@ -52,6 +49,9 @@ type config struct {
 type learner struct {
 	services        *services
 	pileLearnTicker *utils.Ticker
+	statTicker      *utils.Ticker
+	totalPiles      uint64
+	totalProfiles   uint64
 }
 
 var env config
@@ -189,27 +189,27 @@ func (l *learner) processPile(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	totalPiles++
-	totalProfiles += uint64(pile.Count)
-	elapsed := time.Since(startTime)
+	l.totalPiles++
+	l.totalProfiles += uint64(pile.Count)
 
 	l.services.merge(record, &pile)
 
-	pi.Log.Debugf("Successful merging pile totalPiles %d totalProfiles %d time %d", totalPiles, totalProfiles, elapsed)
-	if elapsed > 1000000000 {
-		pi.Log.Infof("Successful merging pile totalPiles %d totalProfiles %d time %d", totalPiles, totalProfiles, elapsed)
-		startTime = time.Now()
-		totalPiles = 0
-		totalProfiles = 0
-	}
+	pi.Log.Debugf("Successful merging pile")
+
 	w.Write([]byte{})
 }
 
 func (l *learner) mainEventLoop(quit chan string) {
 	for {
 		select {
+		case <-l.statTicker.Ch():
+			pi.Log.Infof("totalPiles %d per second, totalProfiles %d per second", l.totalPiles/l.statTicker.Interval(), l.totalProfiles/l.statTicker.Interval())
+			l.totalPiles = 0
+			l.totalProfiles = 0
+
 		case <-l.pileLearnTicker.Ch():
 			l.services.tick()
+
 		case reason := <-quit:
 			pi.Log.Infof("mainEventLoop was asked to quit! - Reason: %s", reason)
 			return
@@ -226,9 +226,14 @@ func preMain(minimumInterval time.Duration) (*learner, *http.ServeMux, string, c
 	utils.CreateLogger(env.GuardServiceLogLevel)
 
 	l := new(learner)
+
 	l.pileLearnTicker = utils.NewTicker(minimumInterval)
 	l.pileLearnTicker.Parse(env.GuardServiceInterval, serviceIntervalDefault)
 	l.pileLearnTicker.Start()
+
+	l.statTicker = utils.NewTicker(minimumInterval)
+	l.statTicker.Parse(env.GuardStatInterval, serviceIntervalDefault)
+	l.statTicker.Start()
 
 	l.services = newServices()
 
@@ -247,7 +252,6 @@ func preMain(minimumInterval time.Duration) (*learner, *http.ServeMux, string, c
 func main() {
 	var err error
 	l, mux, target, quit := preMain(utils.MinimumInterval)
-	startTime = time.Now()
 
 	// cant be tested due to KubeMgr
 	l.services.start()

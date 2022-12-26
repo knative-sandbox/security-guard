@@ -37,7 +37,7 @@ spec:
           - name: GUARD_SERVICE_AUTH
             value: "false"
           - name: GUARD_SERVICE_LOG_LEVEL
-            value: "debug"
+            value: "info"
 ---
 apiVersion: v1
 kind: Service

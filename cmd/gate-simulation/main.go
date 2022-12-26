@@ -49,9 +49,22 @@ var NumServices, NumInstances, NumRequests int
 var jsonBytes []byte
 var wg sync.WaitGroup
 
+var alphabet = []rune("dhgajhdgasfkjndnfnsdfnsdfnsdmnfmsdnflaks!;%$2472364876238746237864ש")
+
+func RandStringRunes() string {
+	n := rand.Intn(100)
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = alphabet[rand.Intn(len(alphabet))]
+	}
+	return string(b)
+}
+
 func simulateReqRespSession(g pi.RoundTripPlug) {
 	// request handling
 	req := httptest.NewRequest("GET", "/", bytes.NewReader(jsonBytes))
+
+	req.Header.Set("X-MYHEADER", RandStringRunes())
 	req, err := g.ApproveRequest(req)
 	if err != nil {
 		pi.Log.Infof("Error during simulation ApproveRequest %v\n", err)
@@ -78,15 +91,11 @@ func simulateReqRespSession(g pi.RoundTripPlug) {
 
 func simulate(g pi.RoundTripPlug) {
 	defer wg.Done()
-	ticker := time.NewTicker(1000 * time.Millisecond)
-
-	for range ticker.C {
-		reqs := rand.Intn(NumRequests)
-		for i := 0; i <= reqs; i++ {
-			simulateReqRespSession(g)
-		}
+	for {
+		r := rand.Intn(1000)
+		time.Sleep(time.Duration(r) * time.Microsecond)
+		simulateReqRespSession(g)
 	}
-
 }
 
 func main() {
@@ -109,13 +118,13 @@ func main() {
 	NumInstances = env.NumInstances
 	NumRequests = env.NumRequests
 	if NumServices == 0 {
-		NumServices = 10
+		NumServices = 1
 	}
 	if NumInstances == 0 {
-		NumInstances = 100
+		NumInstances = 10
 	}
 	if NumRequests == 0 {
-		NumRequests = 100
+		NumRequests = 10
 	}
 
 	pi.Log.Infof("env.GuardUrl %s\n", env.GuardUrl)
@@ -136,14 +145,13 @@ func main() {
 	for svc := 0; svc < NumServices; svc++ {
 		sid := fmt.Sprintf("simulate-%x", svc)
 		for ins := 0; ins < NumInstances; ins++ {
-			plugConfig["guardian-load-interval"] = fmt.Sprintf("%dns", rand.Intn(10000000000))
-			plugConfig["report-pile-interval"] = fmt.Sprintf("%dns", rand.Intn(100000000))
-			plugConfig["pod-monitor-interval"] = fmt.Sprintf("%dns", rand.Intn(10000000000))
-			fmt.Printf("plugConfig %v\n", plugConfig)
+			plugConfig["guardian-load-interval"] = fmt.Sprintf("%dns", rand.Intn(int(1*time.Second)))      // 100s
+			plugConfig["report-pile-interval"] = fmt.Sprintf("%dns", rand.Intn(int(100*time.Microsecond))) // 0.1s
+			plugConfig["pod-monitor-interval"] = fmt.Sprintf("%dns", rand.Intn(int(1*time.Second)))        // 100s
 			g := guardgate.NewGate()
 			g.Init(context.Background(), plugConfig, sid, "", pi.Log)
 			defer g.Shutdown()
-			for i := 0; i < 10; i++ {
+			for i := 0; i < NumRequests; i++ {
 				go simulate(g)
 			}
 		}
