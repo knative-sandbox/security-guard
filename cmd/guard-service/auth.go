@@ -18,4 +18,4 @@ package main
 
 // Uncomment when running in a development environment out side of the cluster
 // import _ "k8s.io/client-go/plugin/pkg/client/auth"
-// import _ "k8s.io/client-go/plugin/pkg/client/auth/odic"
+// import _ "k8s.io/client-go/plugin/pkg/client/auth/oidc"

@@ -539,8 +539,8 @@ func TestKubeMgr_Simulation(t *testing.T) {
 	k := new(KubeMgr)
 	k.getConfigFunc = fakeGetInclusterConfig
 	t.Run("create", func(t *testing.T) {
-		if got := k.GetGuardian("", "x", false, false); got != nil {
-			t.Errorf("KubeMgr.GetGuardian() = %v during simulation", got)
+		if got := k.GetGuardian("", "x", false, false); got == nil {
+			t.Errorf("KubeMgr.GetGuardian() = should return default criteria during simulation")
 		}
 		if got, got2 := k.Read("", "x", false); got != nil || got2 != nil {
 			t.Errorf("KubeMgr.Read() = %v, %v during simulation", got, got2)
