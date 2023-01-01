@@ -37,8 +37,8 @@ func NewTicker(minimumInterval time.Duration) *Ticker {
 	return t
 }
 
-func (t *Ticker) Interval() uint64 {
-	return uint64(t.interval / time.Second)
+func (t *Ticker) Interval() float32 {
+	return float32(t.interval) / float32(time.Second)
 }
 
 func (t *Ticker) Parse(intervalStr string, defaultInterval time.Duration) error {

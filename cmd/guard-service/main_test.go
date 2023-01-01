@@ -49,16 +49,21 @@ func Test_learner_mainEventLoop(t *testing.T) {
 	s.namespaces = make(map[string]bool, 4)
 	s.kmgr = new(fakeKmgr)
 
-	ticker := utils.NewTicker(100000)
-	ticker.Parse("", 100000)
-	ticker.Start()
+	learnTicker := utils.NewTicker(100000)
+	learnTicker.Parse("", 100000)
+	learnTicker.Start()
+
+	statTicker := utils.NewTicker(100000)
+	statTicker.Parse("", 100000)
+	statTicker.Start()
 
 	addToPile(s)
 
 	t.Run("simple", func(t *testing.T) {
 		l := &learner{
 			services:        s,
-			pileLearnTicker: ticker,
+			pileLearnTicker: learnTicker,
+			statTicker:      statTicker,
 		}
 		if s.cache["sid1.ns"].pile.Count != 1 {
 			t.Errorf("Expected 1 in pile  have %d", s.cache["sid1.ns"].pile.Count)

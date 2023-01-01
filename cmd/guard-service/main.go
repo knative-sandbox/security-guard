@@ -203,7 +203,7 @@ func (l *learner) mainEventLoop(quit chan string) {
 	for {
 		select {
 		case <-l.statTicker.Ch():
-			pi.Log.Infof("totalPiles %d per second, totalProfiles %d per second", l.totalPiles/l.statTicker.Interval(), l.totalProfiles/l.statTicker.Interval())
+			pi.Log.Infof("totalPiles %f per second, totalProfiles %f per second", float32(l.totalPiles)/l.statTicker.Interval(), float32(l.totalProfiles)/l.statTicker.Interval())
 			l.totalPiles = 0
 			l.totalProfiles = 0
 
