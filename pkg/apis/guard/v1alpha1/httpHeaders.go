@@ -96,7 +96,3 @@ func (config *HeadersConfig) Learn(pile *HeadersPile) {
 func (config *HeadersConfig) Prepare() {
 	config.Kv.Prepare()
 }
-
-func (config *HeadersConfig) Prepare() {
-	config.Kv.Prepare()
-}

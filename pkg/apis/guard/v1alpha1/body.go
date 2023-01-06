@@ -158,12 +158,3 @@ func (config *BodyConfig) Prepare() {
 		config.Unstructured.Prepare()
 	}
 }
-
-func (config *BodyConfig) Prepare() {
-	if config.Structured != nil {
-		config.Structured.Prepare()
-	}
-	if config.Unstructured != nil {
-		config.Unstructured.Prepare()
-	}
-}

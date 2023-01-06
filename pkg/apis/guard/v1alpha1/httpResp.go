@@ -122,9 +122,3 @@ func (config *RespConfig) Prepare() {
 	config.MediaType.Prepare()
 	config.ContentLength.Prepare()
 }
-
-func (config *RespConfig) Prepare() {
-	config.Headers.Prepare()
-	config.MediaType.Prepare()
-	config.ContentLength.Prepare()
-}

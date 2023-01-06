@@ -96,7 +96,3 @@ func (config *QueryConfig) Learn(pile *QueryPile) {
 func (config *QueryConfig) Prepare() {
 	config.Kv.Prepare()
 }
-
-func (config *QueryConfig) Prepare() {
-	config.Kv.Prepare()
-}

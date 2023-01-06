@@ -288,14 +288,3 @@ func (config *StructuredConfig) Prepare() {
 		config.Val.Prepare()
 	}
 }
-
-func (config *StructuredConfig) Prepare() {
-	switch config.Kind {
-	case KindObject:
-		for _, v := range config.Kv {
-			v.Prepare()
-		}
-	case KindArray, KindBoolean, KindNumber, KindString:
-		config.Val.Prepare()
-	}
-}

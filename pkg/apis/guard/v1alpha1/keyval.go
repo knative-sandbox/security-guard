@@ -202,16 +202,3 @@ func (config *KeyValConfig) Prepare() {
 		config.OtherVals.Prepare()
 	}
 }
-
-func (config *KeyValConfig) Prepare() {
-	for _, v := range config.Vals {
-		v.Prepare()
-	}
-
-	if config.OtherKeynames != nil {
-		config.OtherKeynames.Prepare()
-	}
-	if config.OtherVals != nil {
-		config.OtherVals.Prepare()
-	}
-}

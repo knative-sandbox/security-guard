@@ -108,8 +108,3 @@ func (config *MediaTypeConfig) Prepare() {
 	config.TypeTokens.Prepare()
 	config.Params.Prepare()
 }
-
-func (config *MediaTypeConfig) Prepare() {
-	config.TypeTokens.Prepare()
-	config.Params.Prepare()
-}

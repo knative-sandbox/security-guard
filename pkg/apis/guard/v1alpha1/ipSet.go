@@ -254,6 +254,3 @@ LoopPileIPs:
 
 func (config *IpSetConfig) Prepare() {
 }
-
-func (config *IpSetConfig) Prepare() {
-}

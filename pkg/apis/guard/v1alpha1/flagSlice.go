@@ -106,6 +106,3 @@ func (config *FlagSliceConfig) Learn(pile FlagSlicePile) {
 
 func (config *FlagSliceConfig) Prepare() {
 }
-
-func (config *FlagSliceConfig) Prepare() {
-}

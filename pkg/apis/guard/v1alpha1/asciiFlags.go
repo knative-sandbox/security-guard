@@ -139,6 +139,3 @@ func (config *AsciiFlagsConfig) Learn(pile AsciiFlagsPile) {
 
 func (config *AsciiFlagsConfig) Prepare() {
 }
-
-func (config *AsciiFlagsConfig) Prepare() {
-}

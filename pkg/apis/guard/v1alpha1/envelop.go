@@ -106,8 +106,3 @@ func (config *EnvelopConfig) Prepare() {
 	config.CompletionTime.Prepare()
 	config.ResponseTime.Prepare()
 }
-
-func (config *EnvelopConfig) Prepare() {
-	config.CompletionTime.Prepare()
-	config.ResponseTime.Prepare()
-}

@@ -138,10 +138,7 @@ func (srv *gateClient) reportPile() {
 	srv.pileMutex.Lock()
 	postBody, marshalErr := json.Marshal(srv.pile)
 	srv.pileMutex.Unlock()
-<<<<<<< HEAD
-=======
 	// Must unlock srv.pileMutex before http.NewRequest
->>>>>>> 98a0609b59a50f39c66d536170f13958b1ec29ec
 
 	if marshalErr != nil {
 		// should never happen

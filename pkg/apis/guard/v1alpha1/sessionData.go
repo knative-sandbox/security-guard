@@ -157,12 +157,3 @@ func (config *SessionDataConfig) Prepare() {
 	config.Envelop.Prepare()
 	config.Pod.Prepare()
 }
-
-func (config *SessionDataConfig) Prepare() {
-	config.Req.Prepare()
-	config.Resp.Prepare()
-	config.ReqBody.Prepare()
-	config.RespBody.Prepare()
-	config.Envelop.Prepare()
-	config.Pod.Prepare()
-}
