@@ -172,61 +172,34 @@ func (config *KeyValConfig) learnI(valPile ValuePile) {
 // aggregating all known keys which have common low security fingerprint into
 // OtherKeynames and OtherVals
 func (config *KeyValConfig) Learn(pile *KeyValPile) {
-	config.OtherVals = nil
-	config.OtherKeynames = nil
-
-	if pile == nil {
-		config.Vals = nil
+	if pile == nil || len(*pile) == 0 {
 		return
 	}
 
 	// learn known keys
-	config.Vals = make(map[string]*SimpleValConfig, len(*pile))
-	for k, v := range *pile {
-		svc := new(SimpleValConfig)
-		svc.Learn(v)
-		config.Vals[k] = svc
-	}
-}
-
-func (config *KeyValConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*KeyValConfig))
-}
-
-// otherConfig is RO and unchanged - never uses otherConfig internal objects
-func (config *KeyValConfig) Fuse(otherConfig *KeyValConfig) {
-	if otherConfig == nil {
-		return
-	}
 	if config.Vals == nil {
-		config.Vals = make(map[string]*SimpleValConfig, len(otherConfig.Vals))
+		config.Vals = make(map[string]*SimpleValConfig, len(*pile))
 	}
-	// fuse known keys
-	for k, v := range otherConfig.Vals {
-		svc, exists := config.Vals[k]
-		if exists {
-			svc.Fuse(v)
-		} else {
-			svc := new(SimpleValConfig)
-			svc.Fuse(v)
+	for k, v := range *pile {
+		svc, ok := config.Vals[k]
+		if !ok {
+			svc = new(SimpleValConfig)
 			config.Vals[k] = svc
 		}
+		svc.Learn(v)
+	}
+}
+
+func (config *KeyValConfig) Prepare() {
+	for _, v := range config.Vals {
+		v.Prepare()
 	}
 
-	// fuse keynames of unknown keys
-	if otherConfig.OtherKeynames != nil {
-		if config.OtherKeynames == nil {
-			config.OtherKeynames = new(SimpleValConfig)
-		}
-		config.OtherKeynames.Fuse(otherConfig.OtherKeynames)
+	if config.OtherKeynames != nil {
+		config.OtherKeynames.Prepare()
 	}
-
-	// fuse key values of unknown keys
-	if otherConfig.OtherVals != nil {
-		if config.OtherVals == nil {
-			config.OtherVals = new(SimpleValConfig)
-		}
-		config.OtherVals.Fuse(otherConfig.OtherVals)
+	if config.OtherVals != nil {
+		config.OtherVals.Prepare()
 	}
 }
 

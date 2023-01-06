@@ -27,6 +27,7 @@ type Ctrl struct {
 type GuardianSpec struct {
 	Configured *SessionDataConfig `json:"configured"`        // configrued criteria
 	Learned    *SessionDataConfig `json:"learned,omitempty"` // Learned citeria
+	NumSamples uint32             `json:"samples"`           // Number of Samples Learned
 	Control    *Ctrl              `json:"control"`           // Control
 }
 

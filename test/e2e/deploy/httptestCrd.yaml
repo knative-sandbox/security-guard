@@ -17,12 +17,8 @@ spec:
   learned:
     active: true
     envelop:
-      completiontime:
-      - max: 0
-        min: 0
-      responsetime:
-      - max: 0
-        min: 0
+      completiontime: 0
+      responsetime: 0
     pod:
       tcp4peers: null
       tcp6peers: null
@@ -41,173 +37,75 @@ spec:
           otherVals: null
           vals:
             Accept:
-              digits:
-              - max: 0
-                min: 0
+              digits: 0
               flags: 1073750272
-              letters:
-              - max: 0
-                min: 0
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 3
-                min: 3
-              sequences:
-              - max: 1
-                min: 1
-              spaces:
-              - max: 0
-                min: 0
+              letters: 0
+              nonreadables: 0
+              schars: 3
+              sequences: 1
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             Forwarded:
-              digits:
-              - max: 20
-                min: 0
+              digits: 20
               flags: 167936
-              letters:
-              - max: 20
-                min: 0
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 6
-                min: 6
-              sequences:
-              - max: 30
-                min: 0
-              spaces:
-              - max: 0
-                min: 0
+              letters: 20
+              nonreadables: 0
+              schars: 6
+              sequences: 30
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             K-Proxy-Request:
-              digits:
-              - max: 0
-                min: 0
+              digits: 0
               flags: 0
-              letters:
-              - max: 9
-                min: 9
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 0
-                min: 0
-              sequences:
-              - max: 1
-                min: 1
-              spaces:
-              - max: 0
-                min: 0
+              letters: 9
+              nonreadables: 0
+              schars: 0
+              sequences: 1
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             User-Agent:
-              digits:
-              - max: 4
-                min: 4
+              digits: 4
               flags: 12288
-              letters:
-              - max: 4
-                min: 4
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 3
-                min: 3
-              sequences:
-              - max: 7
-                min: 7
-              spaces:
-              - max: 0
-                min: 0
+              letters: 4
+              nonreadables: 0
+              schars: 3
+              sequences: 7
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             X-Forwarded-For:
-              digits:
-              - max: 30
-                min: 0
+              digits: 30
               flags: 5120
-              letters:
-              - max: 0
-                min: 0
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 7
-                min: 7
-              sequences:
-              - max: 16
-                min: 16
-              spaces:
-              - max: 1
-                min: 1
+              letters: 0
+              nonreadables: 0
+              schars: 7
+              sequences: 16
+              spaces: 1
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             X-Forwarded-Proto:
-              digits:
-              - max: 0
-                min: 0
+              digits: 0
               flags: 0
-              letters:
-              - max: 4
-                min: 4
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 0
-                min: 0
-              sequences:
-              - max: 1
-                min: 1
-              spaces:
-              - max: 0
-                min: 0
+              letters: 4
+              nonreadables: 0
+              schars: 0
+              sequences: 1
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             X-Request-Id:
-              digits:
-              - max: 30
-                min: 0
+              digits: 50
               flags: 2048
-              letters:
-              - max: 30
-                min: 0
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 4
-                min: 4
-              sequences:
-              - max: 40
-                min: 0
-              spaces:
-              - max: 0
-                min: 0
+              letters: 50
+              nonreadables: 0
+              schars: 4
+              sequences: 80
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
       hopip: null
       mediatype:
         params:
@@ -233,29 +131,15 @@ spec:
         - max: 0
           min: 0
         val:
-          digits:
-          - max: 0
-            min: 0
+          digits: 0
           flags: 0
-          letters:
-          - max: 0
-            min: 0
-          nonreadables:
-          - max: 0
-            min: 0
-          schars:
-          - max: 0
-            min: 0
-          sequences:
-          - max: 0
-            min: 0
-          spaces:
-          - max: 0
-            min: 0
+          letters: 0
+          nonreadables: 0
+          schars: 0
+          sequences: 0
+          spaces: 0
           unicodeFlags: []
-          unicodes:
-          - max: 0
-            min: 0
+          unicodes: 0
     reqbody:
       structured: null
       unstructured: null
@@ -269,106 +153,50 @@ spec:
           otherVals: null
           vals:
             Content-Length:
-              digits:
-              - max: 2
-                min: 2
+              digits: 2
               flags: 0
-              letters:
-              - max: 0
-                min: 0
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 0
-                min: 0
-              sequences:
-              - max: 1
-                min: 1
-              spaces:
-              - max: 0
-                min: 0
+              letters: 0
+              nonreadables: 0
+              schars: 0
+              sequences: 1
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             Content-Type:
-              digits:
-              - max: 1
-                min: 1
+              digits: 1
               flags: 174080
-              letters:
-              - max: 19
-                min: 19
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 4
-                min: 4
-              sequences:
-              - max: 10
-                min: 10
-              spaces:
-              - max: 1
-                min: 1
+              letters: 19
+              nonreadables: 0
+              schars: 4
+              sequences: 10
+              spaces: 1
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
             Date:
-              digits:
-              - max: 12
-                min: 12
+              digits: 12
               flags: 17408
-              letters:
-              - max: 9
-                min: 9
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 3
-                min: 3
-              sequences:
-              - max: 16
-                min: 16
-              spaces:
-              - max: 5
-                min: 5
+              letters: 9
+              nonreadables: 0
+              schars: 3
+              sequences: 16
+              spaces: 5
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
       mediatype:
         params:
           otherKeynames: null
           otherVals: null
           vals:
             charset:
-              digits:
-              - max: 1
-                min: 1
+              digits: 1
               flags: 2048
-              letters:
-              - max: 3
-                min: 3
-              nonreadables:
-              - max: 0
-                min: 0
-              schars:
-              - max: 1
-                min: 1
-              sequences:
-              - max: 3
-                min: 3
-              spaces:
-              - max: 0
-                min: 0
+              letters: 3
+              nonreadables: 0
+              schars: 1
+              sequences: 3
+              spaces: 0
               unicodeFlags: []
-              unicodes:
-              - max: 0
-                min: 0
+              unicodes: 0
         type:
           set:
           - text/plain

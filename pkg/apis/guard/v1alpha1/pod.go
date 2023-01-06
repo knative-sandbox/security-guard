@@ -239,17 +239,13 @@ func (config *PodConfig) Learn(pile *PodPile) {
 	config.Udplite6Peers.Learn(&pile.Udplite6Peers)
 }
 
-func (config *PodConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*PodConfig))
-}
-
-func (config *PodConfig) Fuse(otherConfig *PodConfig) {
-	config.Tcp4Peers.Fuse(&otherConfig.Tcp4Peers)
-	config.Udp4Peers.Fuse(&otherConfig.Udp4Peers)
-	config.Udplite4Peers.Fuse(&otherConfig.Udplite4Peers)
-	config.Tcp6Peers.Fuse(&otherConfig.Tcp6Peers)
-	config.Udp6Peers.Fuse(&otherConfig.Udp6Peers)
-	config.Udplite6Peers.Fuse(&otherConfig.Udplite6Peers)
+func (config *PodConfig) Prepare() {
+	config.Tcp4Peers.Prepare()
+	config.Udp4Peers.Prepare()
+	config.Udplite4Peers.Prepare()
+	config.Tcp6Peers.Prepare()
+	config.Udp6Peers.Prepare()
+	config.Udplite6Peers.Prepare()
 }
 
 func (config *PodConfig) Prepare() {

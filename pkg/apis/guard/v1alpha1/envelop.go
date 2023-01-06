@@ -26,8 +26,8 @@ import (
 
 // Exposes ValueProfile interface
 type EnvelopProfile struct {
-	ResponseTime   CountProfile `json:"responsetime"`
-	CompletionTime CountProfile `json:"completiontime"`
+	ResponseTime   LimitProfile `json:"responsetime"`
+	CompletionTime LimitProfile `json:"completiontime"`
 }
 
 func (profile *EnvelopProfile) profileI(args ...interface{}) {
@@ -37,26 +37,18 @@ func (profile *EnvelopProfile) profileI(args ...interface{}) {
 func (profile *EnvelopProfile) Profile(reqTime time.Time, respTime time.Time, endTime time.Time) {
 
 	completionTime := endTime.Sub(reqTime).Seconds()
-	if completionTime > 255 {
-		profile.CompletionTime = 255
-	} else {
-		profile.CompletionTime = CountProfile(completionTime)
-	}
+	profile.CompletionTime.Profile(uint(completionTime))
 
 	responseTime := respTime.Sub(reqTime).Seconds()
-	if responseTime > 255 {
-		profile.ResponseTime = 255
-	} else {
-		profile.ResponseTime = CountProfile(responseTime)
-	}
+	profile.ResponseTime.Profile(uint(responseTime))
 }
 
 //////////////////// EnvelopPile ////////////////
 
 // Exposes ValuePile interface
 type EnvelopPile struct {
-	ResponseTime   CountPile `json:"responsetime"`
-	CompletionTime CountPile `json:"completiontime"`
+	ResponseTime   LimitPile `json:"responsetime"`
+	CompletionTime LimitPile `json:"completiontime"`
 }
 
 func (pile *EnvelopPile) addI(valProfile ValueProfile) {
@@ -86,8 +78,8 @@ func (pile *EnvelopPile) Merge(otherPile *EnvelopPile) {
 
 // Exposes ValueConfig interface
 type EnvelopConfig struct {
-	ResponseTime   CountConfig `json:"responsetime"`
-	CompletionTime CountConfig `json:"completiontime"`
+	ResponseTime   LimitConfig `json:"responsetime"`
+	CompletionTime LimitConfig `json:"completiontime"`
 }
 
 func (config *EnvelopConfig) decideI(valProfile ValueProfile) *Decision {
@@ -110,13 +102,9 @@ func (config *EnvelopConfig) Learn(pile *EnvelopPile) {
 	config.ResponseTime.Learn(pile.ResponseTime)
 }
 
-func (config *EnvelopConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*EnvelopConfig))
-}
-
-func (config *EnvelopConfig) Fuse(otherConfig *EnvelopConfig) {
-	config.CompletionTime.Fuse(otherConfig.CompletionTime)
-	config.ResponseTime.Fuse(otherConfig.ResponseTime)
+func (config *EnvelopConfig) Prepare() {
+	config.CompletionTime.Prepare()
+	config.ResponseTime.Prepare()
 }
 
 func (config *EnvelopConfig) Prepare() {

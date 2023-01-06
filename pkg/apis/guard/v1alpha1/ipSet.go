@@ -226,13 +226,14 @@ LoopProfileIPs:
 // Learn currently offers a rough and simple CIDR support
 // Learn try to add IPs to current CIDRs by inflating the CIDRs.
 // When no CIDR can be inflated to include the IP, Learn adds a new CIDR for this IP
+// Future: Improve Learn to squash consecutive cidrs
+
 func (config *IpSetConfig) learnI(valPile ValuePile) {
 	config.Learn(valPile.(*IpSetPile))
 }
 
 // pile is RO and unchanged - never uses pile internal objects
 func (config *IpSetConfig) Learn(pile *IpSetPile) {
-	*config = nil
 LoopPileIPs:
 	for _, ip := range pile.List {
 		for _, cidr := range *config {
@@ -251,35 +252,7 @@ LoopPileIPs:
 	}
 }
 
-func (config *IpSetConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*IpSetConfig))
-}
-
-// Fuse CidrSetConfig
-// otherConfig is RO and unchanged - never uses otherConfig internal objects
-// The implementation look to opportunistically skip new entries
-// The implementation does not squash new and old entries
-// Future: Improve Fuse to squash consecutive cidrs
-func (config *IpSetConfig) Fuse(otherConfig *IpSetConfig) {
-LoopOtherCidrs:
-	for _, otherCidr := range *otherConfig {
-		for idx, myCidr := range *config {
-			if myCidr.InflateBy(otherCidr.IP) {
-				if myCidr.InflateBy(otherCidr.lastIP()) {
-					continue LoopOtherCidrs
-				}
-			}
-			if myCidr.Include(otherCidr) {
-				continue LoopOtherCidrs
-			}
-			if otherCidr.Include(myCidr) {
-				(*config)[idx] = otherCidr
-				continue LoopOtherCidrs
-			}
-		}
-		// Add a copy of the otherCidr to my list of CIDRs
-		*config = append(*config, *otherCidr.DeepCopy())
-	}
+func (config *IpSetConfig) Prepare() {
 }
 
 func (config *IpSetConfig) Prepare() {

@@ -155,15 +155,10 @@ type ValuePile interface {
 
 // A Config defining what Value should adhere to
 type ValueConfig interface {
-	// learnI config from a pile - destroy any prior state of Config
+	// learnI from a pile to this config
 	// pile should not be used after it is Learned by config
 	// Config may absorb some or the pile internal structures
 	learnI(pile ValuePile)
-
-	// fuseI otherConfig to this config
-	// otherConfig should not be used after it is fused to a config
-	// Config may absorb some or the otherConfig internal structures
-	fuseI(otherConfig ValueConfig)
 
 	// decideI if profile meets config
 	// returns nil if profile is approved by config

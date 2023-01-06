@@ -142,29 +142,14 @@ func (config *SetConfig) learnI(valPile ValuePile) {
 
 // pile is RO and unchanged - never uses pile internal objects
 func (config *SetConfig) Learn(pile *SetPile) {
-	config.List = make([]string, len(pile.List))
-	config.m = make(map[string]bool, len(pile.List))
-
-	for i, v := range pile.List {
-		config.m[v] = true
-		config.List[i] = v
+	if config.List == nil {
+		config.List = make([]string, len(pile.List))
 	}
-}
-
-func (config *SetConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*SetConfig))
-}
-
-// otherConfig is RO and unchanged - never uses otherConfig internal objects
-func (config *SetConfig) Fuse(otherConfig *SetConfig) {
 	if config.m == nil {
-		config.m = make(map[string]bool, len(config.List)+len(otherConfig.List))
-		// Populate the map from the information in List
-		for _, v := range config.List {
-			config.m[v] = true
-		}
+		config.m = make(map[string]bool, len(pile.List))
 	}
-	for _, v := range otherConfig.List {
+
+	for _, v := range pile.List {
 		if !config.m[v] {
 			config.m[v] = true
 			config.List = append(config.List, v)

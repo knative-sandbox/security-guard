@@ -14,32 +14,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package guardutils
+package v1alpha1
 
 import (
-	"fmt"
-	"sync"
+	"testing"
 )
 
-type Stat struct {
-	statistics map[string]uint32
-	mutex      *sync.Mutex
-}
+func TestLimit_V1(t *testing.T) {
+	arguments := [][]uint{
+		{4},
+		{5},
+		{9},
+		{254},
+		{255},
+		{0},
+	}
+	var args []interface{}
+	var profiles []ValueProfile
+	var piles []ValuePile
+	var configs []ValueConfig
+	for i := 0; i < 10; i++ {
+		profiles = append(profiles, new(LimitProfile))
+		piles = append(piles, new(LimitPile))
+		configs = append(configs, new(LimitConfig))
+	}
+	for i := 0; i < len(arguments); i++ {
+		args = append(args, arguments[i])
+	}
 
-func (s *Stat) Init() {
-	s.mutex = new(sync.Mutex)
-	s.statistics = make(map[string]uint32, 8)
-}
-
-func (s *Stat) Add(key string) {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	s.statistics[key]++
-}
-
-func (s *Stat) Log() string {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	str := fmt.Sprintf("%v", s.statistics)
-	return str
+	ValueTests_All(t, profiles, piles, configs, args...)
 }

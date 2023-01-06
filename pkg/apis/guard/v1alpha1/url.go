@@ -102,15 +102,6 @@ func (config *UrlConfig) Learn(pile *UrlPile) {
 	config.Val.Learn(&pile.Val)
 }
 
-func (config *UrlConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*UrlConfig))
-}
-
-func (config *UrlConfig) Fuse(otherConfig *UrlConfig) {
-	config.Segments.Fuse(otherConfig.Segments)
-	config.Val.Fuse(&otherConfig.Val)
-}
-
 func (config *UrlConfig) decideI(valProfile ValueProfile) *Decision {
 
 	return config.Decide(valProfile.(*UrlProfile))

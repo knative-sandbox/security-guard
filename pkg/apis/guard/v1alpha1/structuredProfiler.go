@@ -248,53 +248,44 @@ func (config *StructuredConfig) learnI(valPile ValuePile) {
 
 // pile is RO and unchanged - never uses pile internal objects
 func (config *StructuredConfig) Learn(pile *StructuredPile) {
-	config.Kind = pile.Kind
-	switch config.Kind {
-	case KindObject:
-		config.Kv = make(map[string]*StructuredConfig, len(pile.Kv))
-		for k, v := range pile.Kv {
-			config.Kv[k] = new(StructuredConfig)
-			config.Kv[k].Learn(v)
-		}
-	case KindArray, KindBoolean, KindNumber, KindString:
-		config.Val = new(SimpleValConfig)
-		config.Val.Learn(pile.Val)
-	}
-}
-
-func (config *StructuredConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*StructuredConfig))
-}
-
-// otherConfig is RO and unchanged - never uses otherConfig internal objects
-func (config *StructuredConfig) Fuse(otherConfig *StructuredConfig) {
 	if config.Kind == KindEmpty {
-		config.Kind = otherConfig.Kind
-		switch otherConfig.Kind {
+		config.Kind = pile.Kind
+		switch pile.Kind {
 		case KindObject:
-			config.Kv = make(map[string]*StructuredConfig, len(otherConfig.Kv))
+			config.Kv = make(map[string]*StructuredConfig, len(pile.Kv))
 			config.Val = nil
 		case KindArray, KindBoolean, KindNumber, KindString:
 			config.Val = new(SimpleValConfig)
 			config.Kv = nil
 		}
 	}
-	if config.Kind != otherConfig.Kind {
+	if config.Kind != pile.Kind {
 		config.Kind = KindMulti
 		return
 	}
-	switch otherConfig.Kind {
+	switch config.Kind {
 	case KindObject:
-		for k, v := range otherConfig.Kv {
+		for k, v := range pile.Kv {
 			vConfig, exists := config.Kv[k]
 			if !exists {
 				vConfig = new(StructuredConfig)
 				config.Kv[k] = vConfig
 			}
-			vConfig.Fuse(v)
+			vConfig.Learn(v)
 		}
 	case KindArray, KindBoolean, KindNumber, KindString:
-		config.Val.Fuse(otherConfig.Val)
+		config.Val.Learn(pile.Val)
+	}
+}
+
+func (config *StructuredConfig) Prepare() {
+	switch config.Kind {
+	case KindObject:
+		for _, v := range config.Kv {
+			v.Prepare()
+		}
+	case KindArray, KindBoolean, KindNumber, KindString:
+		config.Val.Prepare()
 	}
 }
 

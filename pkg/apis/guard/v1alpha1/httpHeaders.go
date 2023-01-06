@@ -93,12 +93,8 @@ func (config *HeadersConfig) Learn(pile *HeadersPile) {
 	config.Kv.Learn(pile.Kv)
 }
 
-func (config *HeadersConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*HeadersConfig))
-}
-
-func (config *HeadersConfig) Fuse(otherConfig *HeadersConfig) {
-	config.Kv.Fuse(&otherConfig.Kv)
+func (config *HeadersConfig) Prepare() {
+	config.Kv.Prepare()
 }
 
 func (config *HeadersConfig) Prepare() {

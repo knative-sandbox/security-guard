@@ -128,7 +128,7 @@ func TestSessionData_Decide(t *testing.T) {
 				reqData:   "abc",
 				reqTime:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
 			},
-			decision: "[Req:[MediaType:[Type:[Unexpected key none in Set,],],Method:[Unexpected key Post in Set,],Proto:[Unexpected key HTTP/1.1 in Set,],Url:[Segments:[Value 2 Not Allowed!,],Val:[Digits:[Value 1 Not Allowed!,],Letters:[Value 3 Not Allowed!,],Sequences:[Value 3 Not Allowed!,],Unicode Blocks:[Unexpected Flags in FlagSlice 400 on Element 0,],Unicodes:[Value 1 Not Allowed!,],],],],ReqBody:[Structured Body not allowed,],Resp:[MediaType:[Type:[Unexpected key none in Set,],],],RespBody:[Structured Body not allowed,],]",
+			decision: "[Envelop:[CompletionTime:[Limit out of Range: 255,],ResponseTime:[Limit out of Range: 255,],],Req:[MediaType:[Type:[Unexpected key none in Set,],],Method:[Unexpected key Post in Set,],Proto:[Unexpected key HTTP/1.1 in Set,],Url:[Segments:[Value 2 Not Allowed!,],Val:[Digits:[Limit out of Range: 1,],Letters:[Limit out of Range: 3,],Sequences:[Limit out of Range: 3,],Unicode Blocks:[Unexpected Flags in FlagSlice 400 on Element 0,],Unicodes:[Limit out of Range: 1,],],],],ReqBody:[Structured Body not allowed,],Resp:[MediaType:[Type:[Unexpected key none in Set,],],],RespBody:[Structured Body not allowed,],]",
 		},
 	}
 	for _, tt := range tests {

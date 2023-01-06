@@ -54,7 +54,6 @@ func ValueTests_Test(t *testing.T, profiles []ValueProfile, piles []ValuePile, c
 		// Initial Tests
 		piles[9].Clear()
 		piles[3].mergeI(piles[4])
-		configs[3].fuseI(configs[4])
 		configs[5].learnI(piles[5])
 		configs[6].decideI(profiles[0])
 		piles[6].Clear()
@@ -76,11 +75,11 @@ func ValueTests_Test(t *testing.T, profiles []ValueProfile, piles []ValuePile, c
 
 		// Test ConfigValue
 		for i, pile := range piles {
-			configs[i].learnI(pile)
-			configs[0].fuseI(configs[i])
-			configs[0].fuseI(configs[i])
+			configs[0].learnI(pile)
+			configs[0].learnI(pile)
+
 			if d := configs[0].decideI(profiles[i]); d != nil {
-				t.Errorf("config.Decide(profile) wrong decission: %s\nFor profile %s\nwhen using config %s\n", d.String(""), profiles[i], configs[0])
+				t.Errorf("config.Decide(profile) wrong decision: %s\nFor profile %s\nwhen using config %s\n", d.String(""), profiles[i], configs[0])
 			}
 		}
 	})
@@ -115,8 +114,7 @@ func ValueTests_Test_WithMarshal(t *testing.T, profiles []ValueProfile, piles []
 		}
 		// Test ConfigValue
 		config.learnI(pile)
-		config.fuseI(config)
-		config.fuseI(config)
+		config.learnI(pile)
 
 		if d := config.decideI(profile); d != nil {
 			t.Errorf(d.String("config.Decide(profile) wrong decission:"))
@@ -270,8 +268,8 @@ func ValueTests_TestFuse(t *testing.T, profiles []ValueProfile, piles []ValuePil
 
 		// test ConfigValue
 		configs[0].learnI(piles[0])
-		configs[1].learnI(piles[1])
-		configs[0].fuseI(configs[1])
+		configs[0].learnI(piles[1])
+
 		if d := configs[0].decideI(profiles[0]); d != nil {
 			t.Errorf(d.String("config.Decide(profile) wrong decission: "))
 		}

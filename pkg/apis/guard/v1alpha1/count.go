@@ -62,22 +62,6 @@ type countRange struct {
 	Max uint8 `json:"max"`
 }
 
-func (cRange *countRange) fuseTwoRanges(otherRange *countRange) bool {
-	if cRange.Max < otherRange.Min || cRange.Min > otherRange.Max {
-		// no overlap - nothing to do!
-		return false
-	}
-
-	// There is overlap of some sort
-	if cRange.Min > otherRange.Min {
-		cRange.Min = otherRange.Min
-	}
-	if cRange.Max < otherRange.Max {
-		cRange.Max = otherRange.Max
-	}
-	return true
-}
-
 // Exposes ValueConfig interface
 type CountConfig []countRange
 
@@ -116,14 +100,14 @@ func (config *CountConfig) learnI(valPile ValuePile) {
 
 // Learn now offers the simplest single rule support
 // pile is RO and unchanged - never uses pile internal objects
-// Future: Improve Learn
+// Future: Improve Learn - e.g. by supporting more then one range
 func (config *CountConfig) Learn(pile CountPile) {
-	min := uint8(0)
-	max := uint8(0)
-	if len(pile) > 0 {
-		min = pile[0]
-		max = pile[0]
+	if len(pile) == 0 {
+		return
 	}
+
+	min := pile[0]
+	max := pile[0]
 	for _, v := range pile {
 		if min > v {
 			min = v
@@ -132,33 +116,17 @@ func (config *CountConfig) Learn(pile CountPile) {
 			max = v
 		}
 	}
-	*config = append(*config, countRange{min, max})
-}
 
-func (config *CountConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(*otherValConfig.(*CountConfig))
-}
+	if *config == nil {
+		*config = append(*config, countRange{min, max})
+		return
+	}
 
-// Fuse CountConfig in-place
-// otherValConfig is RO and unchanged - never uses otherValConfig internal objects
-// The implementation look to opportunistically merge new entries to existing ones
-// The implementation does now squash entries even if after the Fuse they may be squashed
-// This is done to achieve Fuse in-place
-// Future: Improve Fuse - e.g. by keeping extra entries in Range [0,0] and reusing them instead of adding new entries
-func (config *CountConfig) Fuse(otherConfig CountConfig) {
-	var fused bool
-	for _, other := range otherConfig {
-		fused = false
-		for idx, this := range *config {
-			if fused = this.fuseTwoRanges(&other); fused {
-				(*config)[idx] = this
-				break
-			}
-		}
-		if !fused {
-			// Creating new countRange avoids both objects pointing to the same object
-			*config = append(*config, countRange{other.Min, other.Max})
-		}
+	if min < (*config)[0].Min {
+		(*config)[0].Min = min
+	}
+	if max > (*config)[0].Max {
+		(*config)[0].Max = max
 	}
 }
 

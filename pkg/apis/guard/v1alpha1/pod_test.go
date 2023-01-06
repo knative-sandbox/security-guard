@@ -67,8 +67,6 @@ func TestPod_V1(t *testing.T) {
 		var config1 PodConfig
 		var config1a PodConfig
 		var config2 PodConfig
-		var config2a PodConfig
-		var config34 PodConfig
 		var config56 PodConfig
 
 		updateAll(data1)
@@ -116,8 +114,7 @@ func TestPod_V1(t *testing.T) {
 		pile1.Add(&profile1a)
 		pile2.Add(&profile2a)
 		config1a.Learn(&pile1)
-		config2a.Learn(&pile2)
-		config1a.Fuse(&config2a)
+		config1a.Learn(&pile2)
 		if d := config1a.Decide(&profile1); d != nil {
 			t.Errorf(d.String("Decide expected to ok but returned error"))
 		}
@@ -133,13 +130,12 @@ func TestPod_V1(t *testing.T) {
 		pile2.Clear()
 		pile1.Add(&profile3)
 		pile2.Add(&profile4)
-		config34.Learn(&pile2)
+		config56.Learn(&pile2)
 		pile1.Clear()
 		pile2.Clear()
 		pile1.Add(&profile5)
 		pile2.Add(&profile6)
 		config56.Learn(&pile2)
-		config56.Fuse(&config34)
 
 		if d := config56.Decide(&profile3); d != nil {
 			t.Errorf(d.String("Decide expected to ok but returned error"))

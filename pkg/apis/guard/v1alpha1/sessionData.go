@@ -140,6 +140,7 @@ func (config *SessionDataConfig) learnI(valPile ValuePile) {
 }
 
 func (config *SessionDataConfig) Learn(pile *SessionDataPile) {
+	config.Active = true
 	config.Req.Learn(&pile.Req)
 	config.Resp.Learn(&pile.Resp)
 	config.ReqBody.Learn(&pile.ReqBody)
@@ -148,18 +149,13 @@ func (config *SessionDataConfig) Learn(pile *SessionDataPile) {
 	config.Pod.Learn(&pile.Pod)
 }
 
-func (config *SessionDataConfig) fuseI(otherValConfig ValueConfig) {
-	config.Fuse(otherValConfig.(*SessionDataConfig))
-}
-
-func (config *SessionDataConfig) Fuse(otherConfig *SessionDataConfig) {
-	config.Active = config.Active || otherConfig.Active
-	config.Req.Fuse(&otherConfig.Req)
-	config.Resp.Fuse(&otherConfig.Resp)
-	config.ReqBody.Fuse(&otherConfig.ReqBody)
-	config.RespBody.Fuse(&otherConfig.RespBody)
-	config.Envelop.Fuse(&otherConfig.Envelop)
-	config.Pod.Fuse(&otherConfig.Pod)
+func (config *SessionDataConfig) Prepare() {
+	config.Req.Prepare()
+	config.Resp.Prepare()
+	config.ReqBody.Prepare()
+	config.RespBody.Prepare()
+	config.Envelop.Prepare()
+	config.Pod.Prepare()
 }
 
 func (config *SessionDataConfig) Prepare() {
