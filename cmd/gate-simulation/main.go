@@ -35,14 +35,11 @@ import (
 )
 
 type config struct {
-	NumServices          int    `split_words:"true" required:"false"`
-	NumInstances         int    `split_words:"true" required:"false"`
-	NumRequests          int    `split_words:"true" required:"false"`
-	GuardUrl             string `split_words:"true" required:"false"`
-	LogLevel             string `split_words:"true" required:"false"`
-	PodMonitorInterval   string `split_words:"true" required:"false"`
-	ReportPileInterval   string `split_words:"true" required:"false"`
-	GuardianLoadInterval string `split_words:"true" required:"false"`
+	NumServices  int    `split_words:"true" required:"false"`
+	NumInstances int    `split_words:"true" required:"false"`
+	NumRequests  int    `split_words:"true" required:"false"`
+	GuardUrl     string `split_words:"true" required:"false"`
+	LogLevel     string `split_words:"true" required:"false"`
 }
 
 var NumServices, NumInstances, NumRequests int

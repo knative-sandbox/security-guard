@@ -71,7 +71,7 @@ func (hc *httpClient) ReadToken(audience string) {
 	b, err := os.ReadFile(path.Join("/var/run/secrets/tokens", audience))
 
 	if err != nil {
-		pi.Log.Infof("Token %s is missing - working without token", audience)
+		pi.Log.Debugf("Token %s is missing - working without token", audience)
 		hc.missingToken = true
 		return
 	}
