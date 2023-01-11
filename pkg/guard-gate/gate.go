@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -154,9 +155,13 @@ func (p *plug) preInit(ctx context.Context, c map[string]string, sid string, ns 
 	ctx, cancelFunction := context.WithCancel(ctx)
 
 	// Defaults used without config when used as a qpoption
-	guardServiceUrl := "http://guard-service.knative-serving"
 	useCm := false
 	monitorPod := true
+
+	guardServiceUrl := "http://guard-service.knative-serving"
+	if rootCA := os.Getenv("ROOT_CA"); rootCA != "" {
+		guardServiceUrl = "https://guard-service.knative-serving"
+	}
 
 	if c != nil {
 		if v, ok = c["guard-url"]; ok && v != "" {
