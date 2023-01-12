@@ -258,6 +258,12 @@ func main() {
 	// start a mainLoop
 	go l.mainEventLoop(quit)
 
+	if env.GuardServiceAuth {
+		pi.Log.Infof("Token turned on - clients identity is confirmed")
+	} else {
+		pi.Log.Infof("Token turned off - clients identity is not confirmed")
+	}
+
 	if env.GuardServiceTls {
 		pi.Log.Infof("TLS turned on")
 		srv := &http.Server{
@@ -282,6 +288,7 @@ func main() {
 		pi.Log.Infof("TLS turned off")
 		err = http.ListenAndServe(target, mux)
 	}
+
 	pi.Log.Infof("Using target: %s - Failed to start %v", target, err)
 	quit <- "ListenAndServe failed"
 }

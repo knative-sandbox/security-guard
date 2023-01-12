@@ -131,7 +131,7 @@ func (k *KubeMgr) WatchOnce(ns string, cmFlag bool, set func(ns string, sid stri
 				gdata := []byte(cm.Data["Guardian"])
 				jsonErr := json.Unmarshal(gdata, g)
 				if jsonErr != nil {
-					pi.Log.Infof("wsgate getConfig: unmarshel error %v\n", jsonErr)
+					pi.Log.Infof("wsgate getConfig sid=%s, ns=%s: unmarshel error %v\n", sid, ns, jsonErr)
 					set(ns, sid, cmFlag, nil)
 					continue
 				}

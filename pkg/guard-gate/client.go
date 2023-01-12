@@ -112,7 +112,6 @@ func (srv *gateClient) initKubeMgr() {
 
 func (srv *gateClient) initHttpClient(certPool *x509.CertPool) {
 	client := new(httpClient)
-	pi.Log.Infof("initHttpClient using ServerName %s\n", certificates.FakeDnsName)
 	client.client.Transport = &http.Transport{
 		MaxConnsPerHost:     0,
 		MaxIdleConns:        0,

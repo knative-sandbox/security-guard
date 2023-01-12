@@ -23,4 +23,3 @@ metadata:
 data:
   # This overrides the configmap produced by knative serving
   queue-sidecar-image: ko://knative.dev/security-guard/cmd/queue
-  queue-sidecar-tokens: guard-service

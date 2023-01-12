@@ -56,7 +56,7 @@ func (gs *gateState) init(cancelFunc context.CancelFunc, monitorPod bool, guardS
 
 	if rootCA := os.Getenv("ROOT_CA"); rootCA != "" {
 		if ok := gs.certPool.AppendCertsFromPEM([]byte(rootCA)); ok {
-			pi.Log.Infof("TLS: Success adding ROOT_CA")
+			pi.Log.Debugf("TLS: Success adding ROOT_CA")
 		} else {
 			pi.Log.Infof("TLS: Failed to AppendCertsFromPEM from ROOT_CA")
 		}

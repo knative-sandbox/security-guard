@@ -54,7 +54,7 @@ type plug struct {
 }
 
 func (p *plug) Shutdown() {
-	pi.Log.Infof("%s: Shutdown", p.name)
+	pi.Log.Debugf("%s: Shutdown", p.name)
 	p.gateState.flushPile()
 }
 
@@ -124,8 +124,7 @@ func (p *plug) guardMainEventLoop(ctx context.Context) {
 		p.reportPileTicker.Stop()
 		p.podMonitorTicker.Stop()
 		p.gateState.flushPile()
-		pi.Log.Infof("Statistics: %s", p.gateState.stat.Log())
-		pi.Log.Infof("%s Done!", plugName)
+		pi.Log.Infof("%s: Done with the following statistics: %s", plugName, p.gateState.stat.Log())
 	}()
 
 	for {
@@ -151,6 +150,7 @@ func (p *plug) guardMainEventLoop(ctx context.Context) {
 func (p *plug) preInit(ctx context.Context, c map[string]string, sid string, ns string, logger pi.Logger) (context.Context, context.CancelFunc) {
 	var ok bool
 	var v string
+	var loadInterval, pileInterval, monitorInterval string
 
 	ctx, cancelFunction := context.WithCancel(ctx)
 
@@ -176,20 +176,21 @@ func (p *plug) preInit(ctx context.Context, c map[string]string, sid string, ns 
 		if v, ok = c["monitor-pod"]; ok && !strings.EqualFold(v, "true") {
 			monitorPod = false
 		}
-		p.guardianLoadTicker = utils.NewTicker(utils.MinimumInterval)
-		p.reportPileTicker = utils.NewTicker(utils.MinimumInterval)
-		p.podMonitorTicker = utils.NewTicker(utils.MinimumInterval)
-		p.guardianLoadTicker.Parse(c["guardian-load-interval"], guardianLoadIntervalDefault)
-		p.reportPileTicker.Parse(c["report-pile-interval"], reportPileIntervalDefault)
-		p.podMonitorTicker.Parse(c["pod-monitor-interval"], podMonitorIntervalDefault)
-
-		pi.Log.Debugf("guard-gate configuration: sid=%s, ns=%s, useCm=%t, guardUrl=%s, p.monitorPod=%t, guardian-load-interval %v, report-pile-interval %v, pod-monitor-interval %v",
-			sid, ns, useCm, guardServiceUrl, monitorPod, c["guardian-load-interval"], c["report-pile-interval"], c["pod-monitor-interval"])
-	} else {
-		p.guardianLoadTicker.Parse("", guardianLoadIntervalDefault)
-		p.reportPileTicker.Parse("", reportPileIntervalDefault)
-		p.podMonitorTicker.Parse("", podMonitorIntervalDefault)
+		loadInterval = c["guardian-load-interval"]
+		pileInterval = c["report-pile-interval"]
+		monitorInterval = c["pod-monitor-interval"]
 	}
+
+	p.guardianLoadTicker = utils.NewTicker(utils.MinimumInterval)
+	p.reportPileTicker = utils.NewTicker(utils.MinimumInterval)
+	p.podMonitorTicker = utils.NewTicker(utils.MinimumInterval)
+
+	p.guardianLoadTicker.Parse(loadInterval, guardianLoadIntervalDefault)
+	p.reportPileTicker.Parse(pileInterval, reportPileIntervalDefault)
+	p.podMonitorTicker.Parse(monitorInterval, podMonitorIntervalDefault)
+
+	pi.Log.Debugf("guard-gate configuration: sid=%s, ns=%s, useCm=%t, guardUrl=%s, p.monitorPod=%t, guardian-load-interval %v, report-pile-interval %v, pod-monitor-interval %v",
+		sid, ns, useCm, guardServiceUrl, monitorPod, loadInterval, pileInterval, monitorInterval)
 
 	// serviceName should never be "ns.{namespace}" as this is a reserved name
 	if strings.HasPrefix(sid, "ns.") {
@@ -199,7 +200,6 @@ func (p *plug) preInit(ctx context.Context, c map[string]string, sid string, ns 
 
 	p.gateState = new(gateState)
 	p.gateState.init(cancelFunction, monitorPod, guardServiceUrl, sid, ns, useCm)
-	pi.Log.Infof("guardServiceUrl %s", guardServiceUrl)
 	return ctx, cancelFunction
 }
 
