@@ -43,7 +43,7 @@ func Test_SessionInContext(t *testing.T) {
 		s1 := newSession(gs, nil)
 		s1.cancelFunc = fakeSessionCancel
 		ctx2 := s1.addSessionToContext(ctx1)
-		s2 := getSessionFromContext(ctx2)
+		s2 := GetSessionFromContext(ctx2)
 
 		if !reflect.DeepEqual(s1, s2) {
 			t.Errorf("received a different session %v, want %v", s2, s1)
@@ -53,7 +53,7 @@ func Test_SessionInContext(t *testing.T) {
 		}
 
 		sessionCanceled = 0
-		if s2.cancel(); sessionCanceled != 1 {
+		if s2.Cancel(); sessionCanceled != 1 {
 			t.Errorf("expected canceled")
 		}
 
@@ -124,14 +124,14 @@ func Test_session_sessionEventLoop(t *testing.T) {
 		s := newSession(gs, nil)
 		s.cancelFunc = cancelFunction
 		gs.stat.Init()
-		s.cancel()
+		s.Cancel()
 		s.sessionEventLoop(ctx)
 		if ret := gs.stat.Log(); ret != "map[NoResponse:1]" {
 			t.Errorf("expected stat %s received %s", "map[NoResponse:1]", ret)
 		}
 		gs.stat.Init()
 		s.gotResponse = true
-		s.cancel()
+		s.Cancel()
 		s.sessionEventLoop(ctx)
 		if ret := gs.stat.Log(); ret != "map[NoAlertCriteriaNotActive:1]" {
 			t.Errorf("expected stat %s received %s", "map[NoAlertCriteriaNotActive:1]", ret)
@@ -139,7 +139,7 @@ func Test_session_sessionEventLoop(t *testing.T) {
 		gs.stat.Init()
 		s.gotResponse = true
 		s.gateState.criteria.Active = true
-		s.cancel()
+		s.Cancel()
 		s.sessionEventLoop(ctx)
 		if ret := gs.stat.Log(); ret != "map[NoAlert:1]" {
 			t.Errorf("expected stat %s received %s", "map[NoAlert:1]", ret)
@@ -148,7 +148,7 @@ func Test_session_sessionEventLoop(t *testing.T) {
 		gs.ctrl.Force = true
 		gs.ctrl.Learn = true
 		s.gotResponse = true
-		s.cancel()
+		s.Cancel()
 		s.sessionEventLoop(ctx)
 		if ret := gs.stat.Log(); ret != "map[NoAlert:1]" {
 			t.Errorf("expected stat %s received %s", "map[NoAlert:1]", ret)
@@ -156,14 +156,14 @@ func Test_session_sessionEventLoop(t *testing.T) {
 
 		gs.stat.Init()
 		s.alert = "x"
-		s.cancel()
+		s.Cancel()
 		s.sessionEventLoop(ctx)
 		if ret := gs.stat.Log(); ret != "map[SessionLevelAlert:1]" {
 			t.Errorf("expected stat %s received %s", "map[SessionLevelAlert:1]", ret)
 		}
 		gs.stat.Init()
 		gs.alert = "x"
-		s.cancel()
+		s.Cancel()
 		s.sessionEventLoop(ctx)
 		if ret := gs.stat.Log(); ret != "map[BlockOnPod:1]" {
 			t.Errorf("expected stat %s received %s", "map[BlockOnPod:1]", ret)

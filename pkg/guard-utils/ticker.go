@@ -21,7 +21,7 @@ import (
 	"time"
 )
 
-const (
+var (
 	MinimumInterval = 5 * time.Second
 )
 
@@ -35,6 +35,10 @@ func NewTicker(minimumInterval time.Duration) *Ticker {
 	t := new(Ticker)
 	t.minimumInterval = minimumInterval
 	return t
+}
+
+func (t *Ticker) Interval() float32 {
+	return float32(t.interval) / float32(time.Second)
 }
 
 func (t *Ticker) Parse(intervalStr string, defaultInterval time.Duration) error {

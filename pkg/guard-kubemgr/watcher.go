@@ -34,6 +34,11 @@ import (
 // Watch for changes in Guardian CRDs and Guardian ConfigMaps
 // No matter how we get an update, cmFlag is used when calling set() as this is what the guard-gate is configured for!
 func (k *KubeMgr) Watch(ns string, cmFlag bool, set func(ns string, sid string, cmFlag bool, g *spec.GuardianSpec)) {
+	// Skip during simulations
+	if len(ns) == 0 {
+		return
+	}
+
 	for {
 		k.WatchOnce(ns, cmFlag, set)
 		timeout, _ := time.ParseDuration("100s")

@@ -95,7 +95,7 @@ func (p *plug) ApproveRequest(req *http.Request) (*http.Request, error) {
 }
 
 func (p *plug) ApproveResponse(req *http.Request, resp *http.Response) (*http.Response, error) {
-	s := getSessionFromContext(req.Context())
+	s := GetSessionFromContext(req.Context())
 	if s == nil { // This should never happen!
 		pi.Log.Infof("%s ........... Blocked During Response! Missing context!", p.name)
 		return nil, errors.New("missing context")
@@ -107,7 +107,7 @@ func (p *plug) ApproveResponse(req *http.Request, resp *http.Response) (*http.Re
 	s.screenResponseBody(resp)
 	s.screenEnvelop()
 	if p.gateState.shouldBlock() && (s.hasAlert() || p.gateState.hasAlert()) {
-		s.cancel()
+		s.Cancel()
 		p.gateState.addStat("BlockOnResponse")
 		return nil, errSecurity
 	}
@@ -221,7 +221,14 @@ func (p *plug) Init(ctx context.Context, c map[string]string, sid string, ns str
 	return newCtx
 }
 
+func NewGate() (p *plug) {
+	p = new(plug)
+	p.version = plugVersion
+	p.name = plugName
+	return
+}
+
 func init() {
-	gate := &plug{version: plugVersion, name: plugName}
+	gate := NewGate()
 	pi.RegisterPlug(gate)
 }

@@ -55,7 +55,7 @@ func newSession(state *gateState, cancel context.CancelFunc) *session {
 	return s
 }
 
-func getSessionFromContext(ctx context.Context) *session {
+func GetSessionFromContext(ctx context.Context) *session {
 	defer func() {
 		// This should never happen!
 		if r := recover(); r != nil {
@@ -79,7 +79,7 @@ func (s *session) hasAlert() bool {
 	return s.alert != ""
 }
 
-func (s *session) cancel() {
+func (s *session) Cancel() {
 	s.cancelFunc()
 }
 
@@ -132,8 +132,9 @@ func (s *session) sessionEventLoop(ctx context.Context) {
 		case <-s.sessionTicker.Ch():
 			s.screenEnvelop()
 			s.screenPod()
+
 			if s.gateState.shouldBlock() && (s.hasAlert() || s.gateState.hasAlert()) {
-				s.cancel()
+				s.Cancel()
 				pi.Log.Debugf("Session Canceled")
 				return
 			}

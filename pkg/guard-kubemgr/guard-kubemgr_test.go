@@ -535,3 +535,22 @@ func TestKubeMgr_ReadGuardian(t *testing.T) {
 		})
 	}
 }
+func TestKubeMgr_Simulation(t *testing.T) {
+	k := new(KubeMgr)
+	k.getConfigFunc = fakeGetInclusterConfig
+	t.Run("create", func(t *testing.T) {
+		if got := k.GetGuardian("", "x", false, false); got == nil {
+			t.Errorf("KubeMgr.GetGuardian() = should return default criteria during simulation")
+		}
+		if got, got2 := k.Read("", "x", false); got != nil || got2 != nil {
+			t.Errorf("KubeMgr.Read() = %v, %v during simulation", got, got2)
+		}
+		if got := k.Set("", "x", false, nil); got != nil {
+			t.Errorf("KubeMgr.Set() = %v during simulation", got)
+		}
+		if got := k.Create("", "x", false, nil); got != nil {
+			t.Errorf("KubeMgr.Create() = %v during simulation", got)
+		}
+
+	})
+}
